@@ -1,0 +1,16 @@
+package com.space_151958.mortgage;
+
+import java.lang.Number;
+
+rule "Validate Downpayment"
+	dialect "mvel"
+	ruleflow-group "validation"
+	when
+		app : Application( downpayment == 0 && downpayment > app.property.saleprice )
+	then
+		ValidationErrorDO fact0 = new ValidationErrorDO();
+		fact0.setError( "Down payment cannot be 0, great than, or equal to the property sale price." );
+		insert( fact0 );
+		System.out.println("Executed file: " + drools.getRule().getName());
+		app.setErrors( fact0 );
+end
